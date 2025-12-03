@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Faktorisasi</title>
+    <style>
+        /* Reset & font */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffe6e6, #ffd9b3);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Container */
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            font-family: 'Lucida Handwriting', cursive;
+            font-size: 5vw;
+            /* scalable */
+            margin-bottom: 20px;
+            color: #c34a36;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 4vw;
+            /* scalable */
+            border: 2px solid #cfa07f;
+            border-radius: 10px;
+            outline: none;
+            background: #fff7f0;
+            color: #5b3a29;
+        }
+
+        input::placeholder {
+            color: #a67c52;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            font-size: 4vw;
+            /* scalable */
+            background: #f5a97f;
+            color: #5b3a29;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #f08a5c;
+            transform: scale(1.03);
+        }
+
+        #hasil {
+            margin-top: 25px;
+            font-size: 4vw;
+            /* scalable */
+            font-weight: bold;
+            color: #c34a36;
+            word-wrap: break-word;
+        }
+
+        @media (min-width: 600px) {
+            h2 {
+                font-size: 26px;
+            }
+
+            input,
+            button {
+                font-size: 18px;
+            }
+
+            #hasil {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Kalkulator Faktorisasi</h2>
+        <input type="text" id="inputPolinom" placeholder="Contoh: x^2 + 5x + 6">
+        <button onclick="faktorkan()">Faktorkan</button>
+        <div id="hasil"></div>
+    </div>
+
+    <script>
+        function faktorkan() {
+            let poly = document.getElementById("inputPolinom").value;
+            poly = poly.replace(/\s+/g, "").replace(/\^/g, "**");
+
+            // ambil koefisien a, b, c
+            let a = 1, b = 0, c = 0;
+            poly = poly.replace(/-/g, "+-");
+            let terms = poly.split("+").filter(e => e);
+
+            terms.forEach(t => {
+                if (t.includes("x**2")) a = parseInt(t.replace("x**2", "")) || 1;
+                else if (t.includes("x")) b = parseInt(t.replace("x", "")) || 1;
+                else c = parseInt(t);
+            });
+
+            // faktorisasi ax² + bx + c
+            let found = false;
+            for (let m = -100; m <= 100; m++) {
+                for (let n = -100; n <= 100; n++) {
+                    if (m * n === a * c && m + n === b) {
+                        let f1 = `${simplify(a)}x ${sign(m / a)}`;
+                        let f2 = `${simplify(1)}x ${sign(n)}`;
+                        document.getElementById("hasil").innerHTML =
+                            `Hasil: (${f1})(${f2})`.replace(/\s+/g, " ");
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) break;
+            }
+            if (!found) document.getElementById("hasil").innerHTML = "Tidak dapat difaktorkan.";
+        }
+
+        function sign(n) {
+            return n >= 0 ? "+ " + n : "- " + Math.abs(n);
+        }
+
+        function simplify(n) {
+            return n === 1 ? "" : n === -1 ? "-" : n;
+        }
+    </script>
+
+</body>
+
+</html>
